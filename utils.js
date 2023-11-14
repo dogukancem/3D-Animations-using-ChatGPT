@@ -164,6 +164,22 @@ function getChatGPTModelViewMatrix() {
 function getModelViewMatrix() {
     // calculate the model view matrix by using the transformation
     // methods and return the modelView matrix in this method
+
+    let translationMatrix = createTranslationMatrix(0.3, -0.25, 0)
+    let scaleMatrix = createScaleMatrix(0.5, 0.5, 1);
+    let angleX = 30 * Math.PI / 180
+    let angleY = 45 * Math.PI / 180
+    let angleZ = 60 * Math.PI / 180
+    let rotationMatrixX = createRotationMatrix_X(angleX)
+    let rotationMatrixY = createRotationMatrix_Y(angleY)
+    let rotationMatrixZ = createRotationMatrix_Z(angleZ)
+
+    let combinedMatrix = multiplyMatrices(rotationMatrixZ, rotationMatrixX)
+    combinedMatrix = multiplyMatrices(combinedMatrix, rotationMatrixY)
+    combinedMatrix = multiplyMatrices(combinedMatrix, scaleMatrix)
+    combinedMatrix = multiplyMatrices(combinedMatrix, translationMatrix)
+
+    return getTransposeMatrix(combinedMatrix)
 }
 
 /**
