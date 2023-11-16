@@ -174,12 +174,11 @@ function getModelViewMatrix() {
     let rotationMatrixY = createRotationMatrix_Y(angleY)
     let rotationMatrixZ = createRotationMatrix_Z(angleZ)
 
-    let combinedMatrix = multiplyMatrices(rotationMatrixZ, rotationMatrixX)
-    combinedMatrix = multiplyMatrices(combinedMatrix, rotationMatrixY)
-    combinedMatrix = multiplyMatrices(combinedMatrix, scaleMatrix)
-    combinedMatrix = multiplyMatrices(combinedMatrix, translationMatrix)
+    let rotation = multiplyMatrices(rotationMatrixX, multiplyMatrices(rotationMatrixZ, rotationMatrixY));
+    let scaleAndRotate = multiplyMatrices(scaleMatrix, rotation);
+    let combinedMatrix = multiplyMatrices(scaleAndRotate, translationMatrix);
 
-    return getTransposeMatrix(combinedMatrix)
+    return combinedMatrix
 }
 
 /**
