@@ -192,7 +192,63 @@ function getModelViewMatrix() {
 function getPeriodicMovement(startTime) {
     // this metdo should return the model view matrix at the given time
     // to get a smooth animation
+    // Define the total duration of the animation (10 seconds)
+    const animationDuration = 10000; // in milliseconds
+
+    // Calculate the current time elapsed since the animation started
+    const currentTime = Date.now();
+    const elapsedTime = (currentTime - startTime) % animationDuration;
+
+    // Calculate the progress ratio (between 0 and 1) within the animation cycle
+    const progress = elapsedTime / animationDuration;
+
+    // Determine if the cube should be transitioning or returning
+    const isTransitioning = progress < 0.5;
+
+    // Interpolate between the original position and getModelViewMatrix
+    let transformationMatrix;
+
+    if (isTransitioning) {
+        // Interpolate from the original position to getModelViewMatrix
+        const interpolationRatio = progress * 2; // Double progress for first 5 seconds
+        transformationMatrix = interpolateMatrices(
+            getIdentityMatrix(), // Original position (identity matrix)
+            getModelViewMatrix(),
+            interpolationRatio
+        );
+    } else {
+        // Interpolate from getModelViewMatrix back to the original position
+        const interpolationRatio = (progress - 0.5) * 2; // Double progress for last 5 seconds
+        transformationMatrix = interpolateMatrices(
+            getModelViewMatrix(),
+            getIdentityMatrix(), // Original position (identity matrix)
+            interpolationRatio
+        );
+    }
+
+    // Apply the transformation matrix to the cube or object here
+    // For example:
+    // cube.applyMatrix(transformationMatrix);
+
+    // Return the transformation matrix for further use if needed
+    return transformationMatrix;
 }
 
+// Helper function to interpolate between two 4x4 matrices
+function interpolateMatrices(matrix1, matrix2, ratio) {
+  const resultMatrix = [];
+  for (let i = 0; i < 16; i++) {
+      resultMatrix[i] = (1 - ratio) * matrix1[i] + ratio * matrix2[i];
+  }
+  return resultMatrix;
+}
 
-
+// Helper function to get the identity matrix (4x4)
+function getIdentityMatrix() {
+  return [
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+  ];
+}
